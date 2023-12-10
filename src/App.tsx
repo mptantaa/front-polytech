@@ -1,8 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Table } from 'antd';
+import React, { useState, useEffect }  from 'react';
+import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './App.css';
+import axios from 'axios';
+
+const LIMIT_LIST_USERS = 10; 
 
 interface User {
   key: number;
@@ -10,37 +12,40 @@ interface User {
   age: number;
 }
 
-const columns: ColumnsType<User> = [
-  {
-    key: 'name',
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    key: 'age',
-    title: 'Age',
-    dataIndex: 'age',
-  },
-];
+const App = () => {
+  const [page, setPage] = useState<number>(1);
+  const [dataSource, setDataSource] = useState<User[]>([]);
+  const skip = (page - 1) * LIMIT_LIST_USERS;
 
-const data: User[] = [
-  {
-    key: 0,
-    name: 'Jack',
-    age: 20,
-  },
-  {
-    key: 1,
-    name: 'Herry',
-    age: 22,
-  },
-];
+  const getUsers = async (skip: number, limit: number) => {
+    const response = await axios.get(`https://dummyjson.com/users?limit=${limit}&skip=${skip}`);
+    setDataSource(response.data.users);
+  }
 
-function App() {
+  const columns: ColumnsType<User> = [
+    {
+      key: 'name',
+      title: 'Имя',
+      dataIndex: 'firstName',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      key: 'age',
+      title: 'Возраст',
+      dataIndex: 'age',
+    },
+  ];
+
+  useEffect(() => {
+    getUsers((page - 1) * LIMIT_LIST_USERS, LIMIT_LIST_USERS);
+  }, [page]);
+
   return (
     <>
-      <Table<User> columns={columns} dataSource={data} />
+      <Table<User> columns={columns} dataSource={dataSource} pagination={false}/>
+      <Button onClick={() => setPage(page - 1)} disabled={!skip}>Назад</Button>
+      <Button onClick={() => setPage(page + 1)}>Вперед</Button>
+      <p>Текущая страница: {page}</p>
     </>
   );
 }
