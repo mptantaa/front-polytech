@@ -3,6 +3,26 @@ import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import '../App.css';
 import axios from 'axios';
+import styled from 'styled-components';
+
+const StyledButton = styled(Button)`
+  background-color: var(--blue);
+  border-color: var(--blue);
+  color: white;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.5;
+
+  &:disabled {
+    border-color: var(--theme-text);
+    background-color: var(--theme-text);
+  } 
+
+  &:hover {
+    border-color: white;
+    background-color: white;
+  } 
+`;
 
 const LIMIT_LIST_USERS = 10; 
 
@@ -37,14 +57,14 @@ const Catalog = () => {
   ];
 
   useEffect(() => {
-    getUsers((page - 1) * LIMIT_LIST_USERS, LIMIT_LIST_USERS);
+    getUsers(skip, LIMIT_LIST_USERS);
   }, [page]);
 
   return (
     <>
       <Table<User> columns={columns} dataSource={dataSource} pagination={false}/>
-      <Button onClick={() => setPage(page - 1)} disabled={!skip}>Назад</Button>
-      <Button onClick={() => setPage(page + 1)}>Вперед</Button>
+      <StyledButton onClick={() => setPage(page - 1)} disabled={!skip}>Назад</StyledButton>
+      <StyledButton onClick={() => setPage(page + 1)}>Вперед</StyledButton>
       <p>Текущая страница: {page}</p>
     </>
   );

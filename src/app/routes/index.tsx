@@ -15,7 +15,7 @@ const MainRouter = ({ isAuth = false }) => {
 
   const authPath = [
     { path: CATALOG_ROUTE, element: <Catalog /> },
-    { path: REVIEWS_ROUTE, element: <Contacts /> },
+    { path: REVIEWS_ROUTE, element: <Reviews /> },
   ];
 
   const resultPaths = isAuth ? [...basedPath, ...authPath] : [...basedPath];
